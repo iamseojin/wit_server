@@ -39,6 +39,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # repo에 docker-compose.yml이 없으므로 Secret에서 꺼내기
+      - name: Restore docker-compose.yml
+        run: |
+          cat << 'EOF' > docker-compose.yml
+          ${{ secrets.DOCKER_COMPOSE_YML }}
+          EOF
+
       # 소스 체크아웃 + JAR 빌드
       - uses: actions/checkout@v3
 
