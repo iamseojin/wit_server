@@ -96,8 +96,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: |
-            docker-compose.yml application-dev.yml
+          source: "docker-compose.yml application-dev.yml"
           target: "~/withtravel"
 
       # EC2로 배포 (compose pull/up)
