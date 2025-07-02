@@ -42,6 +42,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 소스 체크아웃 + JAR 빌드
+      - uses: actions/checkout@v3
+
       # repo에 docker-compose.yml이 없으므로 Secret에서 꺼내기
       - name: Restore docker-compose.yml
         run: |
@@ -49,8 +52,12 @@ jobs:
           ${{ secrets.DOCKER_COMPOSE_YML }}
           EOF
 
-      # 소스 체크아웃 + JAR 빌드
-      - uses: actions/checkout@v3
+      # application-dev.yml 을 Secret 에서 꺼내기
+      - name: Restore application-dev.yml
+        run: |
+          cat << 'EOF' > application-dev.yml
+          ${{ secrets.APPLICATION_DEV_YML }}
+          EOF
 
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -77,13 +84,6 @@ jobs:
 
       - name: Push Docker image
         run: docker push $IMAGE_NAME
-
-      # application-dev.yml 을 Secret 에서 꺼내기
-      - name: Restore application-dev.yml
-        run: |
-          cat << 'EOF' > application-dev.yml
-          ${{ secrets.APPLICATION_DEV_YML }}
-          EOF  
 
       # docker-compose.yml과 application-dev.yml 둘 다 EC2 로 복사
       - name: Copy compose & dev-config to EC2
