@@ -85,10 +85,6 @@ jobs:
       - name: Push Docker image
         run: docker push $IMAGE_NAME
 
-      # 디버그용: 파일들이 제대로 생성됐는지 확인
-      - name: List files before scp
-        run: ls -al .
-
       # docker-compose.yml과 application-dev.yml 둘 다 EC2 로 복사
       - name: Copy compose & dev-config to EC2
         uses: appleboy/scp-action@v0.1.7
