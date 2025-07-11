@@ -1,3 +1,7 @@
 spring:
   config:
+<<<<<<< Updated upstream
     import: "optional:file:./application-dev.yml"
+=======
+    import: "optional:file:application-dev.yml"
+>>>>>>> Stashed changes
