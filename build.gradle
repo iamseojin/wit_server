@@ -87,8 +87,17 @@ dependencies {
 	testImplementation 'org.assertj:assertj-core'                          // 최신 AssertJ
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
 
+	// security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
