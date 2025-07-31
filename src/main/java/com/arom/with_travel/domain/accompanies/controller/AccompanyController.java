@@ -12,6 +12,7 @@ import com.arom.with_travel.domain.accompanies.service.AccompanyService;
 import com.arom.with_travel.domain.accompanies.swagger.*;
 import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,7 @@ public class AccompanyController {
     @PostNewAccompany
     @PostMapping
     public String createNewAccompanyPost(@AuthenticationPrincipal CustomOAuth2User user,
-                                         @RequestBody AccompanyPostRequest request) {
+                                         @RequestBody @Valid AccompanyPostRequest request) {
         return accompanyService.createAccompany(request, user.getOauthId());
     }
 

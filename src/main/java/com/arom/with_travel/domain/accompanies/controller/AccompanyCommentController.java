@@ -9,6 +9,7 @@ import com.arom.with_travel.domain.accompanies.swagger.GetAccompanyComments;
 import com.arom.with_travel.domain.accompanies.swagger.PatchAccompanyComment;
 import com.arom.with_travel.domain.accompanies.swagger.PostAccompanyComment;
 import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +28,7 @@ public class AccompanyCommentController {
     @PostMapping
     public void createComments(@AuthenticationPrincipal CustomOAuth2User user,
                                @PathVariable Long accompanyId,
-                               @RequestBody AccompanyNewCommentRequest request){
+                               @RequestBody @Valid AccompanyNewCommentRequest request){
         accompanyCommentService.addCommentToAccompany(accompanyId, user.getOauthId(), request);
     }
 
@@ -45,7 +46,7 @@ public class AccompanyCommentController {
     @PatchMapping
     public void modifyComment(@AuthenticationPrincipal CustomOAuth2User user,
                               @PathVariable Long accompanyId,
-                              @RequestBody AccompanyUpdateCommentRequest request){
+                              @RequestBody @Valid AccompanyUpdateCommentRequest request){
         accompanyCommentService.updateComment(accompanyId, user.getOauthId() ,request);
     }
 
