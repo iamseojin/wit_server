@@ -5,6 +5,8 @@ import com.arom.with_travel.domain.accompanies.model.City;
 import com.arom.with_travel.domain.accompanies.model.Continent;
 import com.arom.with_travel.domain.accompanies.model.Country;
 import com.arom.with_travel.domain.accompanies.service.AccompanySearchService;
+import com.arom.with_travel.domain.accompanies.swagger.GetAccompaniesByContinent;
+import com.arom.with_travel.domain.accompanies.swagger.GetAccompaniesSearch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/accompanies/search")
@@ -28,6 +29,7 @@ public class AccompanySearchController {
 
     private final AccompanySearchService accompanySearchService;
 
+    @GetAccompaniesSearch
     @GetMapping
     public Slice<AccompanyBriefResponse> searchByKeyword(
             @RequestParam(required = false) String keyword,
@@ -42,6 +44,7 @@ public class AccompanySearchController {
     }
 
     // 아직은 대륙별 검색 기능만 제공
+    @GetAccompaniesByContinent
     @GetMapping("/search")
     public List<AccompanyBriefResponse> searchByContinent(
             @RequestParam(value = "continent", required = false) Continent continent,

@@ -26,9 +26,9 @@ public class AccompanyApplyService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public String applyAccompany(Long accompanyId, Long memberId){
+    public String applyAccompany(Long accompanyId, String oauthId){
         Accompany accompany = loadAccompanyOrThrow(accompanyId);
-        Member proposer = loadMemberOrThrow(memberId);
+        Member proposer = loadMemberOrThrow(oauthId);
         proposer.validateNotAlreadyAppliedTo(accompany);
         AccompanyAppliedEvent event = new AccompanyAppliedEvent(accompany, proposer);
         applyRepository.save(AccompanyApply.apply(accompany, proposer));
@@ -36,8 +36,8 @@ public class AccompanyApplyService {
         return "참가 신청이 완료됐습니다.";
     }
 
-    private Member loadMemberOrThrow(Long memberId){
-        return memberRepository.findById(memberId)
+    private Member loadMemberOrThrow(String oauthId){
+        return memberRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> BaseException.from(ErrorCode.MEMBER_NOT_FOUND));
     }
 

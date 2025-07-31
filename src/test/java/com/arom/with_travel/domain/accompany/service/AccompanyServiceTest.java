@@ -58,8 +58,10 @@ public class AccompanyServiceTest {
         request = AccompanyFixture.동행_생성용_dto();
         owner = Member.create("test", "test@naver.com", Member.Role.USER);
         setField(owner, "nickname", "test-nickname");
+        setField(owner, "oauthId", "test");
         proposer = Member.create("proposer", "proposer@naver.com", Member.Role.USER);
         setField(proposer, "nickname", "proposer-nickname");
+        setField(proposer, "oauthId", "test2");
         accompany = Accompany.from(request);
         likes = LikeFixture.createLikes(owner, accompany);
     }
@@ -68,10 +70,10 @@ public class AccompanyServiceTest {
         @Test
         void 동행_글쓰기_성공(){
             //given
-            given(memberRepository.findById(anyLong())).willReturn(Optional.of(owner));
+            given(memberRepository.findByOauthId(anyString())).willReturn(Optional.of(owner));
             given(accompanyRepository.save(any(Accompany.class))).willReturn(accompany);
             //when
-            String result = accompanyService.createAccompany(request, 1L);
+            String result = accompanyService.createAccompany(request, "oauthId");
             //then
             assertThat(result).isEqualTo("등록 되었습니다");
             verify(accompanyRepository, times(1)).save(any(Accompany.class));
@@ -80,9 +82,9 @@ public class AccompanyServiceTest {
         @Test
         void 동행_글쓰기_맴버찾을수없음_실패(){
             //given
-            given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+            given(memberRepository.findByOauthId(anyString())).willReturn(Optional.empty());
             //when & then
-            assertThatThrownBy(() -> accompanyService.createAccompany(request, 1L))
+            assertThatThrownBy(() -> accompanyService.createAccompany(request, "oauthId"))
                     .isInstanceOf(BaseException.class);
         }
     }
@@ -93,11 +95,11 @@ public class AccompanyServiceTest {
         void 동행_좋아요_성공() {
             //given
             accompany.post(owner);
-            given(memberRepository.findById(anyLong())).willReturn(Optional.of(owner));
+            given(memberRepository.findByOauthId(anyString())).willReturn(Optional.of(owner));
             given(accompanyRepository.findById(anyLong())).willReturn(Optional.of(accompany));
             given(likesRepository.save(any(Likes.class))).willReturn(likes);
             //when
-            boolean result = accompanyService.toggleLike(1L, 1L);
+            boolean result = accompanyService.toggleLike(1L, "oauthId");
             //then
             assertThat(result).isTrue();
         }
@@ -106,13 +108,13 @@ public class AccompanyServiceTest {
         void 동행_좋아요_취소_성공() {
             //given
             accompany.post(owner);
-            given(memberRepository.findById(anyLong())).willReturn(Optional.of(owner));
+            given(memberRepository.findByOauthId(anyString())).willReturn(Optional.of(owner));
             given(accompanyRepository.findById(anyLong())).willReturn(Optional.of(accompany));
             given(likesRepository.save(any(Likes.class))).willReturn(likes);
-            accompanyService.toggleLike(1L, 1L);
+            accompanyService.toggleLike(1L, "oauthId");
             given(likesRepository.findByAccompanyAndMember(accompany, owner)).willReturn(Optional.ofNullable(likes));
             //when
-            boolean result = accompanyService.toggleLike(1L, 1L);
+            boolean result = accompanyService.toggleLike(1L, "oauthId");
             //then
             assertThat(result).isFalse();
         }

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String Email);
+    Optional<Member> findByOauthId(String oauthId);
     Optional<Member> findById(Long memberId);
     boolean existsByEmail(String email);
     boolean existsByOauthId(String oauthId);

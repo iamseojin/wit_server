@@ -4,8 +4,14 @@ import com.arom.with_travel.domain.accompanies.dto.request.AccompanyNewCommentRe
 import com.arom.with_travel.domain.accompanies.dto.request.AccompanyUpdateCommentRequest;
 import com.arom.with_travel.domain.accompanies.dto.response.AccompanyCommentSliceResponse;
 import com.arom.with_travel.domain.accompanies.service.AccompanyCommentService;
+import com.arom.with_travel.domain.accompanies.swagger.DeleteAccompanyComment;
+import com.arom.with_travel.domain.accompanies.swagger.GetAccompanyComments;
+import com.arom.with_travel.domain.accompanies.swagger.PatchAccompanyComment;
+import com.arom.with_travel.domain.accompanies.swagger.PostAccompanyComment;
+import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -17,12 +23,15 @@ public class AccompanyCommentController {
 
     private final AccompanyCommentService accompanyCommentService;
 
+    @PostAccompanyComment
     @PostMapping
-    public void createComments(@PathVariable Long accompanyId,
+    public void createComments(@AuthenticationPrincipal CustomOAuth2User user,
+                               @PathVariable Long accompanyId,
                                @RequestBody AccompanyNewCommentRequest request){
-        accompanyCommentService.addCommentToAccompany(accompanyId, 1L, request);
+        accompanyCommentService.addCommentToAccompany(accompanyId, user.getOauthId(), request);
     }
 
+    @GetAccompanyComments
     @GetMapping
     public AccompanyCommentSliceResponse getComments(
             @PathVariable Long accompanyId,
@@ -32,14 +41,18 @@ public class AccompanyCommentController {
         return accompanyCommentService.getComments(accompanyId, lastCreatedAt, lastId, size);
     }
 
+    @PatchAccompanyComment
     @PatchMapping
-    public void modifyComment(@PathVariable Long accompanyId,
+    public void modifyComment(@AuthenticationPrincipal CustomOAuth2User user,
+                              @PathVariable Long accompanyId,
                               @RequestBody AccompanyUpdateCommentRequest request){
-        accompanyCommentService.updateComment(accompanyId, 1L ,request);
+        accompanyCommentService.updateComment(accompanyId, user.getOauthId() ,request);
     }
 
+    @DeleteAccompanyComment
     @DeleteMapping
-    public void removeComment(@PathVariable Long accompanyId){
-        accompanyCommentService.deleteComment(accompanyId, 1L);
+    public void removeComment(@AuthenticationPrincipal CustomOAuth2User user,
+                              @PathVariable Long accompanyId){
+        accompanyCommentService.deleteComment(accompanyId, user.getOauthId());
     }
 }

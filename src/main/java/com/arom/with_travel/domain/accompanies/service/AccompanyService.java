@@ -37,8 +37,8 @@ public class AccompanyService {
     private final LikesRepository likesRepository;
 
     @Transactional
-    public String createAccompany(AccompanyPostRequest request, Long memberId) {
-        Member member = loadMemberOrThrow(memberId);
+    public String createAccompany(AccompanyPostRequest request, String oauthId) {
+        Member member = loadMemberOrThrow(oauthId);
         Accompany accompany = Accompany.from(request);
         accompany.post(member);
         accompanyRepository.save(accompany);
@@ -46,8 +46,8 @@ public class AccompanyService {
     }
 
     @Transactional
-    public boolean toggleLike(Long accompanyId, Long memberId){
-        Member member = loadMemberOrThrow(memberId);
+    public boolean toggleLike(Long accompanyId, String oauthId){
+        Member member = loadMemberOrThrow(oauthId);
         Accompany accompany = loadAccompanyOrThrow(accompanyId);
         Optional<Likes> like = loadLikes(accompany, member);
         if (like.isPresent()) {
@@ -74,8 +74,8 @@ public class AccompanyService {
         return accompanyList.map(AccompanyBriefResponse::from);
     }
 
-    private Member loadMemberOrThrow(Long memberId){
-        return memberRepository.findById(memberId)
+    private Member loadMemberOrThrow(String oauthId){
+        return memberRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> BaseException.from(ErrorCode.MEMBER_NOT_FOUND));
     }
 

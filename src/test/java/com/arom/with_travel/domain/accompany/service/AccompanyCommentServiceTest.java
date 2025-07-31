@@ -76,10 +76,10 @@ class AccompanyCommentServiceTest {
     void 댓글_등록_성공() {
         // given
         given(accompanyRepository.findById(anyLong())).willReturn(Optional.of(accompany));
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(memberRepository.findByOauthId(anyString())).willReturn(Optional.of(member));
 
         // when
-        accompanyCommentService.addCommentToAccompany(1L, 1L, request);
+        accompanyCommentService.addCommentToAccompany(1L, "oauthId", request);
 
         // then
         verify(accompanyCommentRepository).save(any(AccompanyComment.class));
@@ -91,7 +91,7 @@ class AccompanyCommentServiceTest {
         given(accompanyRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> accompanyCommentService.addCommentToAccompany(1L, 1L, request))
+        assertThatThrownBy(() -> accompanyCommentService.addCommentToAccompany(1L, "oauthId", request))
                 .isInstanceOf(BaseException.class);
     }
 
@@ -99,10 +99,10 @@ class AccompanyCommentServiceTest {
     void 댓글_등록_실패_유저없음() {
         // given
         given(accompanyRepository.findById(anyLong())).willReturn(Optional.of(accompany));
-        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(memberRepository.findByOauthId(anyString())).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> accompanyCommentService.addCommentToAccompany(1L, 1L, request))
+        assertThatThrownBy(() -> accompanyCommentService.addCommentToAccompany(1L, "oauthId", request))
                 .isInstanceOf(BaseException.class);
     }
 
@@ -145,7 +145,7 @@ class AccompanyCommentServiceTest {
 
         // when
         System.out.println(update.getComment());
-        accompanyCommentService.updateComment(1L, member.getId(), update);
+        accompanyCommentService.updateComment(1L, member.getOauthId(), update);
 
         // then
         assertThat(comment.getContent()).isEqualTo("update comment");
@@ -156,7 +156,7 @@ class AccompanyCommentServiceTest {
         // given
         given(accompanyCommentRepository.findById(anyLong())).willReturn(Optional.empty());
         // when & then
-        assertThatThrownBy(() -> accompanyCommentService.updateComment(1L, member.getId(), update))
+        assertThatThrownBy(() -> accompanyCommentService.updateComment(1L, member.getOauthId(), update))
                 .isInstanceOf(BaseException.class);
     }
 
@@ -167,7 +167,7 @@ class AccompanyCommentServiceTest {
 
 
         // when & then
-        assertThatThrownBy(() -> accompanyCommentService.updateComment(1L, otherMember.getId(), update))
+        assertThatThrownBy(() -> accompanyCommentService.updateComment(1L, otherMember.getOauthId(), update))
                 .isInstanceOf(BaseException.class);
     }
 
@@ -177,7 +177,7 @@ class AccompanyCommentServiceTest {
         given(accompanyCommentRepository.findById(anyLong())).willReturn(Optional.of(comment));
 
         // when
-        accompanyCommentService.deleteComment(1L, member.getId());
+        accompanyCommentService.deleteComment(1L, member.getOauthId());
 
         // then
         verify(accompanyCommentRepository).delete(comment);
@@ -189,7 +189,7 @@ class AccompanyCommentServiceTest {
         given(accompanyCommentRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> accompanyCommentService.deleteComment(1L, member.getId()))
+        assertThatThrownBy(() -> accompanyCommentService.deleteComment(1L, member.getOauthId()))
                 .isInstanceOf(BaseException.class);
     }
 
@@ -199,7 +199,7 @@ class AccompanyCommentServiceTest {
         given(accompanyCommentRepository.findById(anyLong())).willReturn(Optional.of(comment));
 
         // when & then
-        assertThatThrownBy(() -> accompanyCommentService.deleteComment(1L, otherMember.getId()))
+        assertThatThrownBy(() -> accompanyCommentService.deleteComment(1L, otherMember.getOauthId()))
                 .isInstanceOf(BaseException.class);
     }
 }

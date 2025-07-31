@@ -23,6 +23,7 @@ public class AccompanyCommentTest {
     void setUp() {
         writer = Member.create("writer", "writer@test.com", Member.Role.USER);
         setField(writer, "id", 1L);
+        setField(writer, "oauthId", "test");
         accompany = AccompanyFixture.동행_생성();
         accompany.post(writer);
     }
@@ -63,7 +64,7 @@ public class AccompanyCommentTest {
                 .accompany(accompany)
                 .build();
         // when, then
-        comment.validateIsCommentWriter(writer.getId());
+        comment.validateIsCommentWriter(writer.getOauthId());
     }
 
     @Test
@@ -71,13 +72,14 @@ public class AccompanyCommentTest {
         // given
         Member otherMember = Member.create("다른회원", "other@test.com", Member.Role.USER);
         setField(otherMember, "id", 2L);
+        setField(otherMember, "oauthId", "test2");
         AccompanyComment comment = AccompanyComment.builder()
                 .content("댓글")
                 .member(writer)
                 .accompany(accompany)
                 .build();
         // when, then
-        assertThatThrownBy(() -> comment.validateIsCommentWriter(otherMember.getId()))
+        assertThatThrownBy(() -> comment.validateIsCommentWriter(otherMember.getOauthId()))
                 .isInstanceOf(BaseException.class);
     }
 }

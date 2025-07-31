@@ -31,9 +31,9 @@ public class AccompanyCommentService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void addCommentToAccompany(Long accompanyId, Long memberId, AccompanyNewCommentRequest request){
+    public void addCommentToAccompany(Long accompanyId, String oauthId, AccompanyNewCommentRequest request){
         Accompany accompany = loadAccompanyOrThrow(accompanyId);
-        Member member = loadMemberOrThrow(memberId);
+        Member member = loadMemberOrThrow(oauthId);
         AccompanyComment accompanyComment = AccompanyComment.from(request, member, accompany);
         accompanyCommentRepository.save(accompanyComment);
     }
@@ -48,21 +48,21 @@ public class AccompanyCommentService {
     }
 
     @Transactional
-    public void updateComment(Long accompanyCommentId, Long memberId, AccompanyUpdateCommentRequest request){
+    public void updateComment(Long accompanyCommentId, String oauthId, AccompanyUpdateCommentRequest request){
         AccompanyComment accompanyComment = loadAccompanyCommentOrThrow(accompanyCommentId);
-        accompanyComment.validateIsCommentWriter(memberId);
+        accompanyComment.validateIsCommentWriter(oauthId);
         accompanyComment.updateContent(request.getComment());
     }
 
     @Transactional
-    public void deleteComment(Long accompanyCommentId, Long memberId){
+    public void deleteComment(Long accompanyCommentId, String oauthId){
         AccompanyComment accompanyComment = loadAccompanyCommentOrThrow(accompanyCommentId);
-        accompanyComment.validateIsCommentWriter(memberId);
+        accompanyComment.validateIsCommentWriter(oauthId);
         accompanyCommentRepository.delete(accompanyComment);
     }
 
-    private Member loadMemberOrThrow(Long memberId){
-        return memberRepository.findById(memberId)
+    private Member loadMemberOrThrow(String oauthId){
+        return memberRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> BaseException.from(ErrorCode.MEMBER_NOT_FOUND));
     }
 

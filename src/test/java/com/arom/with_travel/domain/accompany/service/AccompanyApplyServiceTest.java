@@ -62,10 +62,10 @@ public class AccompanyApplyServiceTest {
     void 동행_신청_성공() {
         // given
         given(accompanyRepository.findById(anyLong())).willReturn(Optional.of(accompany));
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(proposer));
+        given(memberRepository.findByOauthId(anyString())).willReturn(Optional.of(proposer));
 
         // when
-        String result = accompanyApplyService.applyAccompany(1L, 1L);
+        String result = accompanyApplyService.applyAccompany(1L, "oauthId");
 
         // then
         assertThat(result).isEqualTo("참가 신청이 완료됐습니다.");
@@ -82,7 +82,7 @@ public class AccompanyApplyServiceTest {
         proposer.getAccompanyApplies().add(apply);
 
         // when & then
-        assertThatThrownBy(() -> accompanyApplyService.applyAccompany(1L, 1L))
+        assertThatThrownBy(() -> accompanyApplyService.applyAccompany(1L, "oauthId"))
                 .isInstanceOf(BaseException.class);
     }
 }

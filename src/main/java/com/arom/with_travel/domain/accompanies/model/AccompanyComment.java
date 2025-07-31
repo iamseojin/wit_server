@@ -41,8 +41,8 @@ public class AccompanyComment extends BaseEntity {
         this.content = newContent;
     }
 
-    public void validateIsCommentWriter(Long memberId) {
-        if(!member.getId().equals(memberId)){
+    public void validateIsCommentWriter(String memberId) {
+        if(!member.getOauthId().equals(memberId)){
             throw BaseException.from(ErrorCode.ACCOMPANY_COMMENT_NO_PERMISSION_UPDATE);
         }
     }

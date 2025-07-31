@@ -8,7 +8,8 @@ import com.arom.with_travel.domain.accompanies.model.Continent;
 import com.arom.with_travel.domain.accompanies.model.Country;
 import com.arom.with_travel.domain.accompanies.service.AccompanyApplyService;
 import com.arom.with_travel.domain.accompanies.service.AccompanyService;
-import com.arom.with_travel.domain.accompanies.swagger.PostNewAccompany;
+import com.arom.with_travel.domain.accompanies.swagger.*;
+import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +28,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/accompanies")
 @Tag(name = "동행", description = "동행 api 정보")
-// TODO : 로그인 작업 끝난 후 로그인 객체에서 회원 정보 가져오기
 public class AccompanyController {
 
     private final AccompanyService accompanyService;
@@ -34,25 +35,32 @@ public class AccompanyController {
 
     @PostNewAccompany
     @PostMapping
-    public String createNewAccompanyPost(@RequestBody AccompanyPostRequest request) {
-        return accompanyService.createAccompany(request, 1L);
+    public String createNewAccompanyPost(@AuthenticationPrincipal CustomOAuth2User user,
+                                         @RequestBody AccompanyPostRequest request) {
+        return accompanyService.createAccompany(request, user.getOauthId());
     }
 
+    @GetAccompanyDetails
     @GetMapping("/{accompanyId}")
     public AccompanyDetailsResponse showAccompanyDetails(@PathVariable Long accompanyId){
         return accompanyService.showAccompanyDetails(accompanyId);
     }
 
+    @PatchAccompanyLike
     @PatchMapping("/{accompanyId}/like")
-    public boolean doLike(@PathVariable Long accompanyId){
-        return accompanyService.toggleLike(accompanyId, 1L);
+    public boolean doLike(@AuthenticationPrincipal CustomOAuth2User user,
+                          @PathVariable Long accompanyId){
+        return accompanyService.toggleLike(accompanyId, user.getOauthId());
     }
 
+    @PostAccompanyApply
     @PostMapping("/{accompanyId}/apply")
-    public String doApply(@PathVariable Long accompanyId){
-        return accompanyApplyService.applyAccompany(accompanyId, 1L);
+    public String doApply(@AuthenticationPrincipal CustomOAuth2User user,
+                          @PathVariable Long accompanyId){
+        return accompanyApplyService.applyAccompany(accompanyId, user.getOauthId());
     }
 
+    @GetAccompaniesBrief
     @GetMapping
     public Slice<AccompanyBriefResponse> showAccompaniesBrief(
             @RequestParam(value = "country", required = false) Country country,
