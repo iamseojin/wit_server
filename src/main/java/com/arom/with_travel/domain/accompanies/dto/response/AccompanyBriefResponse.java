@@ -6,12 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
 @Builder
-public class AccompanyBriefResponse {
-    private Long accompanyId;
+public class AccompanyBriefResponse implements CursorSliceResponse.HasCreatedAt,
+        CursorSliceResponse.HasId{
+    private Long id;
     private Country country;
     private LocalDate startDate;
     private LocalTime startTime;
@@ -19,10 +21,11 @@ public class AccompanyBriefResponse {
     private int maxParticipants;
     private String writer;
     private Long views;
+    private LocalDateTime createdAt;
 
     public static AccompanyBriefResponse from(Accompany accompany){
         return AccompanyBriefResponse.builder()
-                .accompanyId(accompany.getId())
+                .id(accompany.getId())
                 .country(accompany.getCountry())
                 .startDate(accompany.getStartDate())
                 .startTime(accompany.getStartTime())
@@ -30,7 +33,10 @@ public class AccompanyBriefResponse {
                 .maxParticipants(accompany.getMaxParticipants())
                 .writer(accompany.getMember().getNickname())
                 .views(accompany.getViews())
+                .createdAt(accompany.getCreatedAt())
                 .build();
-
     }
+
+    @Override public LocalDateTime createdAt() { return createdAt; }
+    @Override public Long id()       { return id; }
 }

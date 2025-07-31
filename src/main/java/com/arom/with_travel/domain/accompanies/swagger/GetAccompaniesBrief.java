@@ -22,6 +22,7 @@ import java.lang.annotation.Target;
 @Operation(
         summary     = "동행 목록 간단 조회",
         description = """
+            동행 목록 첫 페이지는 어느 국가를 기반으로
             국가(country) 필터와 커서(lastId) 기반으로
             동행 목록을 Slice 방식(무한 스크롤)에 맞춰 조회합니다.
             """

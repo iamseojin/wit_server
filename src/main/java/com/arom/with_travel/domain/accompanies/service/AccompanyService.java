@@ -1,6 +1,7 @@
 package com.arom.with_travel.domain.accompanies.service;
 
 import com.arom.with_travel.domain.accompanies.dto.response.AccompanyBriefResponse;
+import com.arom.with_travel.domain.accompanies.dto.response.CursorSliceResponse;
 import com.arom.with_travel.domain.accompanies.model.Accompany;
 import com.arom.with_travel.domain.accompanies.model.AccompanyApply;
 import com.arom.with_travel.domain.accompanies.dto.request.AccompanyPostRequest;
@@ -68,10 +69,10 @@ public class AccompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<AccompanyBriefResponse> showAccompaniesBrief(Country country, int size, Long lastId){
+    public CursorSliceResponse<AccompanyBriefResponse> showAccompaniesBrief(Country country, int size, Long lastId){
         Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Slice<Accompany> accompanyList = accompanyRepository.findByCountry(country, lastId, pageable);
-        return accompanyList.map(AccompanyBriefResponse::from);
+        Slice<AccompanyBriefResponse> dtoSlice = accompanyRepository.findByCountry(country, lastId, pageable).map(AccompanyBriefResponse::from);
+        return CursorSliceResponse.of(dtoSlice);
     }
 
     private Member loadMemberOrThrow(String oauthId){

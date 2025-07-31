@@ -3,6 +3,7 @@ package com.arom.with_travel.domain.accompanies.controller;
 import com.arom.with_travel.domain.accompanies.dto.request.AccompanyPostRequest;
 import com.arom.with_travel.domain.accompanies.dto.response.AccompanyBriefResponse;
 import com.arom.with_travel.domain.accompanies.dto.response.AccompanyDetailsResponse;
+import com.arom.with_travel.domain.accompanies.dto.response.CursorSliceResponse;
 import com.arom.with_travel.domain.accompanies.model.City;
 import com.arom.with_travel.domain.accompanies.model.Continent;
 import com.arom.with_travel.domain.accompanies.model.Country;
@@ -62,7 +63,7 @@ public class AccompanyController {
 
     @GetAccompaniesBrief
     @GetMapping
-    public Slice<AccompanyBriefResponse> showAccompaniesBrief(
+    public CursorSliceResponse<AccompanyBriefResponse> showAccompaniesBrief(
             @RequestParam(value = "country", required = false) Country country,
             @RequestParam(required = false) Long lastId,
             @RequestParam(defaultValue = "10") int size){

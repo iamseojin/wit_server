@@ -1,8 +1,10 @@
 package com.arom.with_travel.domain.accompany.service;
 
+import com.arom.with_travel.domain.accompanies.dto.cursor.Cursor;
 import com.arom.with_travel.domain.accompanies.dto.request.AccompanyPostRequest;
 import com.arom.with_travel.domain.accompanies.dto.response.AccompanyBriefResponse;
 import com.arom.with_travel.domain.accompanies.dto.response.AccompanyDetailsResponse;
+import com.arom.with_travel.domain.accompanies.dto.response.CursorSliceResponse;
 import com.arom.with_travel.domain.accompanies.model.*;
 import com.arom.with_travel.domain.accompanies.repository.accompany.AccompanyRepository;
 import com.arom.with_travel.domain.accompanies.service.AccompanyService;
@@ -169,11 +171,11 @@ public class AccompanyServiceTest {
             given(accompanyRepository.findByCountry(country, lastId, PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdAt"))))
                     .willReturn(accompanySlice);
             // when
-            Slice<AccompanyBriefResponse> result = accompanyService.showAccompaniesBrief(country, size, lastId);
+            CursorSliceResponse<AccompanyBriefResponse> result = accompanyService.showAccompaniesBrief(country, size, lastId);
 
             // then
             assertThat(result).isNotNull();
-            assertThat(result.getContent()).hasSize(2);
+            assertThat(result.content()).hasSize(2);
             verify(accompanyRepository, times(1)).findByCountry(eq(country), eq(lastId), any(Pageable.class));
         }
         @Test
@@ -191,10 +193,10 @@ public class AccompanyServiceTest {
             given(accompanyRepository.findByCountry(country, lastId, PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdAt"))))
                     .willReturn(accompanySlice);
             // when
-            Slice<AccompanyBriefResponse> result = accompanyService.showAccompaniesBrief(country, size, lastId);
+            CursorSliceResponse<AccompanyBriefResponse> result = accompanyService.showAccompaniesBrief(country, size, lastId);
             // then
             assertThat(result).isNotNull();
-            assertThat(result.getContent()).isEmpty();
+            assertThat(result.content()).isEmpty();
             verify(accompanyRepository, times(1)).findByCountry(eq(country), eq(lastId), any(Pageable.class));
         }
     }

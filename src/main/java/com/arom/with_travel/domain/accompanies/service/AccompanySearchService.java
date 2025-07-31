@@ -1,6 +1,8 @@
 package com.arom.with_travel.domain.accompanies.service;
 
+import com.arom.with_travel.domain.accompanies.dto.cursor.Cursor;
 import com.arom.with_travel.domain.accompanies.dto.response.AccompanyBriefResponse;
+import com.arom.with_travel.domain.accompanies.dto.response.CursorSliceResponse;
 import com.arom.with_travel.domain.accompanies.model.*;
 import com.arom.with_travel.domain.accompanies.repository.accompany.AccompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,30 +25,21 @@ public class AccompanySearchService {
 
     private final AccompanyRepository accompanyRepository;
 
-    @Transactional(readOnly = true)
-    public List<AccompanyBriefResponse> searchByContinent(Continent continent, Pageable pageable){
-        return accompanyRepository.findByContinent(continent, pageable)
-                .stream()
-                .map(AccompanyBriefResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    public Slice<AccompanyBriefResponse> getFilteredAccompanies(
-            Continent continent,
-            Country country,
-            City city,
-            LocalDate startDate,
-            Long lastId,
-            int size
-    ) {
-        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return accompanyRepository.findByFiltersWithNoOffset(
-                continent,
-                country,
-                city,
-                startDate,
-                lastId,
-                pageable).map(AccompanyBriefResponse::from);
+    public CursorSliceResponse<AccompanyBriefResponse> getFilteredAccompanies(Cursor cursor,
+                                                            String keyword,
+                                                            Continent continent,
+                                                            Country country,
+                                                            City city,
+                                                            LocalDate startDate,
+                                                            int size) {
+        Pageable pageable = PageRequest.of(0, Math.min(size, 100),
+                Sort.by(Sort.Direction.DESC, "createdAt", "id"));
+        Slice<AccompanyBriefResponse> dtoSlice =
+                accompanyRepository.findByFiltersWithNoOffset(
+                        keyword, continent, country, city, startDate, cursor.lastCreatedAt(), cursor.lastId(), pageable
+                        )
+                        .map(AccompanyBriefResponse::from);
+        return CursorSliceResponse.of(dtoSlice);
     }
 
 }

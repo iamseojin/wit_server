@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AccompanyRepository extends JpaRepository<Accompany, Long>{
@@ -25,26 +26,35 @@ public interface AccompanyRepository extends JpaRepository<Accompany, Long>{
             @Param("country") Country country,
             @Param("lastId") Long lastId,
             Pageable pageable);
-
+    
     @Query("""
-    SELECT a FROM Accompany a
-    WHERE (:continent IS NULL OR a.continent = :continent)
-    AND (:country IS NULL OR a.country = :country)
-    AND (:city IS NULL OR a.city = :city)
-    AND (:startDate IS NULL OR a.startDate >= :startDate)
-    AND (
-        :lastCreatedAt IS NULL OR 
-        (a.createdAt < :lastCreatedAt) OR 
+SELECT a
+FROM   Accompany a
+WHERE  (:continent  IS NULL OR a.continent  = :continent)
+  AND  (:country    IS NULL OR a.country    = :country)
+  AND  (:city       IS NULL OR a.city       = :city)
+  AND  (:startDate  IS NULL OR a.startDate >= :startDate)
+
+  AND  (
+        :keyword IS NULL OR :keyword = '' OR
+        LOWER(a.title)   LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+        LOWER(a.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+       )
+  AND  (
+        :lastCreatedAt IS NULL OR
+        (a.createdAt < :lastCreatedAt) OR
         (a.createdAt = :lastCreatedAt AND a.id < :lastId)
-    )
-    ORDER BY a.createdAt DESC, a.id DESC
+       )
+ORDER BY a.createdAt DESC, a.id DESC
 """)
     Slice<Accompany> findByFiltersWithNoOffset(
-            @Param("continent") Continent continent,
-            @Param("country") Country country,
-            @Param("city") City city,
-            @Param("startDate") LocalDate startDate,
-            @Param("lastId") Long lastId,
+            @Param("keyword")       String keyword,
+            @Param("continent")     Continent continent,
+            @Param("country")       Country country,
+            @Param("city")          City city,
+            @Param("startDate")     LocalDate startDate,
+            @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
+            @Param("lastId")        Long lastId,
             Pageable pageable
     );
 
