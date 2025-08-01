@@ -8,6 +8,7 @@ import com.arom.with_travel.domain.accompanies.model.Continent;
 import com.arom.with_travel.domain.accompanies.model.Country;
 import com.arom.with_travel.domain.accompanies.service.AccompanySearchService;
 import com.arom.with_travel.domain.accompanies.swagger.GetAccompaniesSearch;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/accompanies/search")
+@Tag(name = "동행 필터링 검색 api")
 public class AccompanySearchController {
 
     private final AccompanySearchService accompanySearchService;

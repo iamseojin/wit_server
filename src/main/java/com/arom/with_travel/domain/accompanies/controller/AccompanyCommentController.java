@@ -9,6 +9,7 @@ import com.arom.with_travel.domain.accompanies.swagger.GetAccompanyComments;
 import com.arom.with_travel.domain.accompanies.swagger.PatchAccompanyComment;
 import com.arom.with_travel.domain.accompanies.swagger.PostAccompanyComment;
 import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/accompanies/{accompanyId}/comments")
+@Tag(name = "동행 후기 CRUD")
 public class AccompanyCommentController {
 
     private final AccompanyCommentService accompanyCommentService;

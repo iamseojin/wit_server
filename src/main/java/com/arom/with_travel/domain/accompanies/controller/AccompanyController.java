@@ -29,7 +29,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/accompanies")
-@Tag(name = "동행", description = "동행 api 정보")
+@Tag(name = "동행 모집 글 CRUD 및 부가 기능")
 public class AccompanyController {
 
     private final AccompanyService accompanyService;
