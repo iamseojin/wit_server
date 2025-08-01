@@ -4,32 +4,80 @@ import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;
 import com.arom.with_travel.global.exception.error.ErrorDisplayType;
 import com.arom.with_travel.global.exception.response.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class})
 public class GlobalExceptionHandler {
 
-    /**
-     * 클라이언트 에러
-     * 직접 생성한 예외에 대한 처리
-     */
-    @ExceptionHandler(BaseException.class)
-    public ErrorResponse onThrowException(BaseException baseException) {
-        return ErrorResponse.generateErrorResponse(baseException);
+    // HTTP Method 불일치 에러
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ErrorResponse handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException e) {
+        return ErrorResponse.generateFrom(ErrorCode.METHOD_NOT_ALLOWED);
     }
 
-    // TODO : 바인딩 에러 관련 ErrorCode 작성
+    // @RequestBody JSON 파싱 에러
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ErrorResponse handleJsonParseException(HttpMessageNotReadableException e) {
+        return ErrorResponse.generateFrom(ErrorCode.INVALID_JSON_FORMAT);
+    }
+
+    // 필수 @RequestParam 누락
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ErrorResponse handleMissingParam(MissingServletRequestParameterException e) {
+        return ErrorResponse.generateFrom(ErrorCode.MISSING_PARAMETER);
+    }
+
+    // @RequestParam 타입 불일치
+    @ExceptionHandler(TypeMismatchException.class)
+    public ErrorResponse handleTypeMismatchException(TypeMismatchException e) {
+        return ErrorResponse.generateFrom(ErrorCode.INVALID_PARAMETER_TYPE);
+    }
+
+    // 데이터 무결성 위반
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        return ErrorResponse.generateFrom(ErrorCode.ERR_DATA_INTEGRITY_VIOLATION);
+    }
+
+    @ExceptionHandler(BaseException.class)
+    public ErrorResponse onThrowException(BaseException baseException) {
+        return ErrorResponse.generateFrom(baseException);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse onThrowException(MethodArgumentNotValidException exception){
-        return ErrorResponse.builder()
-                .code(ErrorCode.TMP_ERROR.getCode())
-                .message(exception.getBindingResult().getFieldError().getDefaultMessage())
-                .displayType(ErrorDisplayType.POPUP)
-                .build();
+        String message = exception.getBindingResult().getFieldError().getDefaultMessage();
+        return ErrorResponse.generateWithCustomMessage(ErrorCode.REQ_BODY_ERROR, message);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ErrorResponse onThrowException(HandlerMethodValidationException exception){
+        String message = exception
+                .getAllErrors()
+                .stream()
+                .map(MessageSourceResolvable::getDefaultMessage)
+                .findFirst()
+                .orElse("Validation Failed");
+        return ErrorResponse.generateWithCustomMessage(ErrorCode.REQ_PARAMS_ERROR, message);
+    }
+
+    @ExceptionHandler(Exception.class)
+    protected ErrorResponse handleException(Exception e) {
+        return ErrorResponse.generateFrom(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 }

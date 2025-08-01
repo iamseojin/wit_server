@@ -7,7 +7,24 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    TMP_ERROR("S3-0000", "파일 형식이 올바르지 않습니다.", ErrorDisplayType.MODAL),
+    // Common Error
+    INTERNAL_SERVER_ERROR("C001", "Server Error", ErrorDisplayType.POPUP),
+    INVALID_INPUT_VALUE("C002", "Invalid Input Value",ErrorDisplayType.POPUP ),
+    METHOD_NOT_ALLOWED("C003", "Invalid HTTP Method", ErrorDisplayType.POPUP),
+    ENTITY_NOT_FOUND("C004", "Entity Not Found", ErrorDisplayType.POPUP ),
+    CONFLICT("C005", "Conflict Occurred", ErrorDisplayType.POPUP),
+    UNACCEPTABLE_EXTENSION("C007", "Unacceptable Extension",ErrorDisplayType.POPUP ),
+    INVALID_JSON_FORMAT("C008", "Invalid JSON Format",ErrorDisplayType.POPUP ),
+    MISSING_PARAMETER("C009", "Missing Parameter",ErrorDisplayType.POPUP ),
+    INVALID_PARAMETER_TYPE("C010", "Invalid Parameter Type",ErrorDisplayType.POPUP ),
+    MISSING_PATH_VARIABLE("C011", "Missing Path Variable", ErrorDisplayType.POPUP),
+    FORBIDDEN("C012", "Forbidden", ErrorDisplayType.POPUP),
+    ERR_DATA_INTEGRITY_VIOLATION("E001", "Data integrity violation", ErrorDisplayType.POPUP),
+    VALIDATION_FAILED("C013", "Validation Failed", ErrorDisplayType.POPUP),
+
+    // Validation
+    REQ_BODY_ERROR("REQ-0000", "", ErrorDisplayType.POPUP),
+    REQ_PARAMS_ERROR("REQ-0001", "", ErrorDisplayType.POPUP),
 
     //member
     MEMBER_NOT_FOUND("MEM-0000", "해당 회원이 존재하지 않습니다.", ErrorDisplayType.POPUP),

@@ -1,6 +1,7 @@
 package com.arom.with_travel.global.exception.response;
 
 import com.arom.with_travel.global.exception.BaseException;
+import com.arom.with_travel.global.exception.error.ErrorCode;
 import com.arom.with_travel.global.exception.error.ErrorDisplayType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -20,7 +21,15 @@ public class ErrorResponse {
     private final String message;
     private final ErrorDisplayType displayType;
 
-    public static ErrorResponse generateErrorResponse(BaseException baseException){
+    public static ErrorResponse generateFrom(ErrorCode errorCode) {
+        return new ErrorResponse(errorCode.getCode(), errorCode.getMessage(), errorCode.getDisplayType());
+    }
+
+    public static ErrorResponse generateWithCustomMessage(ErrorCode errorCode, String customMessage) {
+        return new ErrorResponse(errorCode.getCode(), customMessage, errorCode.getDisplayType());
+    }
+
+    public static ErrorResponse generateFrom(BaseException baseException){
         if(baseException.hasCustomMessage()) {
             return new ErrorResponse(
                     baseException.getErrorCode().getCode(),
