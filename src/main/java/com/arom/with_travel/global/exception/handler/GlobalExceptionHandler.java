@@ -4,11 +4,13 @@ import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;
 import com.arom.with_travel.global.exception.error.ErrorDisplayType;
 import com.arom.with_travel.global.exception.response.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -22,6 +24,16 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class})
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<String> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+                                                           HttpServletRequest request) {
+        log.warn("❗ 잘못된 HTTP 메서드 요청 - [{}] {} -> {}", ex.getMethod(), request.getRequestURI(), ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body("지원하지 않는 HTTP 메서드입니다: " + request.getRequestURI());
+    }
+
 
     // HTTP Method 불일치 에러
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
