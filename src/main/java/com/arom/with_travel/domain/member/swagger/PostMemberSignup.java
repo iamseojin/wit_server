@@ -1,6 +1,6 @@
 package com.arom.with_travel.domain.member.swagger;
 
-import com.arom.with_travel.domain.member.dto.MemberSignupResponseDto;
+import com.arom.with_travel.domain.member.dto.response.MemberSignupResponseDto;
 import com.arom.with_travel.global.exception.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

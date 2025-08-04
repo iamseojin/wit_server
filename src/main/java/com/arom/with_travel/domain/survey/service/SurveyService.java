@@ -9,6 +9,7 @@ import com.arom.with_travel.domain.survey.dto.response.SurveyResponseDto;
 import com.arom.with_travel.domain.survey.repository.SurveyRepository;
 import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;
+import com.arom.with_travel.global.security.domain.AuthenticatedMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

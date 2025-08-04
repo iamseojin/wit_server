@@ -2,6 +2,7 @@ package com.arom.with_travel.global.exception.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -22,6 +23,11 @@ public enum ErrorCode {
     ERR_DATA_INTEGRITY_VIOLATION("E001", "Data integrity violation", ErrorDisplayType.POPUP),
     VALIDATION_FAILED("C013", "Validation Failed", ErrorDisplayType.POPUP),
 
+    INVALID_TOKEN("TOKEN-0001", "유효하지 않는 토큰입니다.", ErrorDisplayType.POPUP),
+    EXPIRED_ACCESS_TOKEN("TOKEN-0000", "토큰 오류", ErrorDisplayType.POPUP),
+    INVALID_EMAIL_OR_PASSWORD("MEMBER-0001", "유효하지 않는 이메일, 비번", ErrorDisplayType.POPUP),
+    EMPTY_TOKEN_PROVIDED("TOKEN-0002", "토큰 텅텅", ErrorDisplayType.POPUP),
+
     // Validation
     REQ_BODY_ERROR("REQ-0000", "", ErrorDisplayType.POPUP),
     REQ_PARAMS_ERROR("REQ-0001", "", ErrorDisplayType.POPUP),
@@ -32,7 +38,6 @@ public enum ErrorCode {
 
     //token
     TOKEN_NOT_FOUND("TKN-0000", "refresh token이 존재하지 않습니다.", ErrorDisplayType.POPUP),
-    INVALID_TOKEN("TKN-0001", "유효하지 않은 token입니다.", ErrorDisplayType.POPUP),
 
     //accompany
     ACCOMPANY_NOT_FOUND("ACC-0000", "해당 동행이 존재하지 않습니다.", ErrorDisplayType.POPUP),

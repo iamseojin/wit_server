@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final AccompanyService accompanyService;
 
     // userId로 유저 조회, 실패 시 에러 발생
     public Member getUserByUserIdOrElseThrow(Long userId) {

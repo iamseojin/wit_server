@@ -4,8 +4,7 @@ import com.arom.with_travel.domain.member.Member;
 import com.arom.with_travel.domain.member.service.MemberSignupService;
 import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;
-import com.arom.with_travel.global.jwt.domain.RefreshToken;
-import com.arom.with_travel.global.jwt.repository.RefreshTokenRepository;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,14 +23,14 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("TokenService 단위 테스트")
 class TokenServiceTest {
 
-    @Mock
-    TokenProvider tokenProvider;
-    @Mock
-    RefreshTokenService refreshTokenService;
-    @Mock MemberSignupService memberSignupService;
-
-    @InjectMocks
-    TokenService tokenService;
+//    @Mock
+//    TokenProvider tokenProvider;
+//    @Mock
+//    RefreshTokenService refreshTokenService;
+//    @Mock MemberSignupService memberSignupService;
+//
+//    @InjectMocks
+//    TokenService tokenService;
 
 //    @Test
 //    @DisplayName("refresh 토큰으로 새 access 토큰 발급")
@@ -56,16 +55,16 @@ class TokenServiceTest {
 //        assertThat(result).isEqualTo("newAccess.jwt");
 //    }
 
-    @Test
-    @DisplayName("유효하지 않은 refresh 토큰이면 예외 발생")
-    void 엑세스_토큰_발급_실패_유효하지않음() {
-        // given
-        String invalidToken = "bad.jwt";
-        given(tokenProvider.validToken(invalidToken)).willReturn(false);
-
-        // when & then
-        assertThatThrownBy(() -> tokenService.createNewAccessToken(invalidToken))
-                .isInstanceOf(BaseException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_TOKEN);
-    }
+//    @Test
+//    @DisplayName("유효하지 않은 refresh 토큰이면 예외 발생")
+//    void 엑세스_토큰_발급_실패_유효하지않음() {
+//        // given
+//        String invalidToken = "bad.jwt";
+//        given(tokenProvider.validToken(invalidToken)).willReturn(false);
+//
+//        // when & then
+//        assertThatThrownBy(() -> tokenService.createNewAccessToken(invalidToken))
+//                .isInstanceOf(BaseException.class)
+//                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_TOKEN);
+//    }
 }

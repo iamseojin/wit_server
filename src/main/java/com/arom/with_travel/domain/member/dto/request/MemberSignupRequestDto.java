@@ -1,4 +1,4 @@
-package com.arom.with_travel.domain.member.dto;
+package com.arom.with_travel.domain.member.dto.request;
 
 import com.arom.with_travel.domain.member.Member.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;

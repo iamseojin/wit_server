@@ -1,20 +1,16 @@
-package com.arom.with_travel.global.jwt.controller;
+package com.arom.with_travel.global.security.token.controller;
 
-import com.arom.with_travel.global.exception.error.ErrorCode;
-import com.arom.with_travel.global.jwt.dto.response.LoginResponse;
-import com.arom.with_travel.global.jwt.service.TokenService;
-import com.arom.with_travel.global.oauth2.util.CookieUtil;
+import com.arom.with_travel.global.security.token.dto.request.RefreshTokenRequest;
+import com.arom.with_travel.global.security.token.service.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,22 +43,8 @@ public class TokenController {
             ),
     })
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse<String>> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
-        // Refresh Token 쿠키에서 가져오기
-        String refreshToken = CookieUtil.getCookie(request, "refresh_token")
-                .map(Cookie::getValue)
-                .orElse(null);
-
-        if (refreshToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body((LoginResponse<String>) LoginResponse.error(ErrorCode.TOKEN_NOT_FOUND));
-        }
-
-        // 새로운 Access Token 발급
-        String newAccessToken = tokenService.createNewAccessToken(refreshToken);
-
-        response.setHeader("Authorization", "Bearer " + newAccessToken);
-
-        return ResponseEntity.ok(LoginResponse.success(newAccessToken));
+    public ResponseEntity<String> refreshAccessToken(@RequestBody @Valid RefreshTokenRequest request) {
+        String newAccessToken = tokenService.createNewAccessToken(request.getRefreshToken());
+        return ResponseEntity.ok(newAccessToken);
     }
 }

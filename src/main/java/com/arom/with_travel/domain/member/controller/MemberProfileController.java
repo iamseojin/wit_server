@@ -1,19 +1,14 @@
 package com.arom.with_travel.domain.member.controller;
 
 import com.arom.with_travel.domain.accompanies.dto.response.AccompanyDetailsResponse;
-import com.arom.with_travel.domain.accompanies.service.AccompanyService;
 import com.arom.with_travel.domain.image.dto.ImageRequest;
-import com.arom.with_travel.domain.member.dto.MemberProfileRequestDto;
-import com.arom.with_travel.domain.member.dto.MemberProfileResponseDto;
+import com.arom.with_travel.domain.member.dto.response.MemberProfileResponseDto;
 import com.arom.with_travel.domain.member.service.MemberProfileService;
-import com.arom.with_travel.domain.member.service.MemberService;
-import com.arom.with_travel.global.jwt.service.TokenProvider;
-import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
-import jakarta.servlet.http.HttpServletRequest;
+import com.arom.with_travel.global.security.domain.AuthenticatedMember;
+import com.arom.with_travel.global.security.domain.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,37 +17,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberProfileController {
 
-    private final TokenProvider tokenProvider;
     private final MemberProfileService memberProfileService;
 
     @GetMapping("/myPostAccompany")
-    public List<AccompanyDetailsResponse> myPost(HttpServletRequest request){
-        return memberProfileService.myPostAccompany(tokenProvider.getMemberLoginEmail(request));
+    public List<AccompanyDetailsResponse> myPost(@AuthenticationPrincipal PrincipalDetails principal){
+        AuthenticatedMember member = principal.getAuthenticatedMember();
+        return memberProfileService.myPostAccompany(member.getEmail());
     }
 
     @GetMapping("/myApplyAccompany")
-    public List<AccompanyDetailsResponse> myApply(HttpServletRequest request){
-        return memberProfileService.myApplyAccompany(tokenProvider.getMemberLoginEmail(request));
+    public List<AccompanyDetailsResponse> myApply(@AuthenticationPrincipal PrincipalDetails principal){
+        AuthenticatedMember member = principal.getAuthenticatedMember();
+        return memberProfileService.myApplyAccompany(member.getEmail());
     }
 
     @GetMapping("/myPastAccompany")
-    public List<AccompanyDetailsResponse> myPast(HttpServletRequest request){
-        return memberProfileService.myPastAccompany(tokenProvider.getMemberLoginEmail(request));
+    public List<AccompanyDetailsResponse> myPast(@AuthenticationPrincipal PrincipalDetails principal){
+        AuthenticatedMember member = principal.getAuthenticatedMember();
+        return memberProfileService.myPastAccompany(member.getEmail());
     }
 
     @GetMapping("/main")
-    public MemberProfileResponseDto getProfile(HttpServletRequest request){
-        return memberProfileService.getProfile(tokenProvider.getMemberLoginEmail(request));
+    public MemberProfileResponseDto getProfile(@AuthenticationPrincipal PrincipalDetails principal){
+        AuthenticatedMember member = principal.getAuthenticatedMember();
+        return memberProfileService.getProfile(member.getEmail());
     }
 
     @GetMapping("/introduction")
-    public String getIntroduction(HttpServletRequest request){
-        return memberProfileService.getIntroduction(tokenProvider.getMemberLoginEmail(request));
+    public String getIntroduction(@AuthenticationPrincipal PrincipalDetails principal){
+        AuthenticatedMember member = principal.getAuthenticatedMember();
+        return memberProfileService.getIntroduction(member.getEmail());
     }
 
     @PostMapping("/profile-image")
-    public void uploadProfileImage(@AuthenticationPrincipal CustomOAuth2User user, @RequestBody ImageRequest request){
-        memberProfileService.uploadMemberProfileImage(user, request.getImageName(), request.getImageUrl());
+    public void uploadProfileImage(@AuthenticationPrincipal PrincipalDetails principal, @RequestBody ImageRequest request){
+        AuthenticatedMember member = principal.getAuthenticatedMember();
+        memberProfileService.uploadMemberProfileImage(member.getEmail(), request.getImageName(), request.getImageUrl());
     }
     //note 동행후기, 작성한글, 좋아요 누른 글 => 추가하기
 }

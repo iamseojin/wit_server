@@ -2,8 +2,8 @@ package com.arom.with_travel.domain.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import com.arom.with_travel.domain.member.Member;
-import com.arom.with_travel.domain.member.dto.MemberSignupRequestDto;
-import com.arom.with_travel.domain.member.dto.MemberSignupResponseDto;
+import com.arom.with_travel.domain.member.dto.request.MemberSignupRequestDto;
+import com.arom.with_travel.domain.member.dto.response.MemberSignupResponseDto;
 import com.arom.with_travel.domain.member.repository.MemberRepository;
 import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;

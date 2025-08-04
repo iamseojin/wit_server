@@ -2,8 +2,9 @@ package com.arom.with_travel.global.jwt.service;
 
 import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;
-import com.arom.with_travel.global.jwt.domain.RefreshToken;
-import com.arom.with_travel.global.jwt.repository.RefreshTokenRepository;
+
+import com.arom.with_travel.global.security.token.domain.RefreshToken;
+import com.arom.with_travel.global.security.token.repository.RefreshTokenRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,8 @@ import static org.mockito.Mockito.when;
 @DisplayName("RefreshTokenService 단위 테스트")
 class RefreshTokenServiceTest {
 
-    @Mock RefreshTokenRepository refreshTokenRepository;
+    @Mock
+    RefreshTokenRepository refreshTokenRepository;
     @InjectMocks RefreshTokenService refreshTokenService;
 
     @Test
@@ -30,7 +32,7 @@ class RefreshTokenServiceTest {
     void 토큰_조회_성공() {
         // given
         RefreshToken token = RefreshToken.create(1L, "refresh.jwt");
-        when(refreshTokenRepository.findByRefreshToken("refresh.jwt"))
+        when(refreshTokenRepository.findByJwtValue("refresh.jwt"))
                 .thenReturn(Optional.of(token));
 
         // when
@@ -44,7 +46,7 @@ class RefreshTokenServiceTest {
     @DisplayName("findByRefreshToken – 없을 시 해당 ErrorCode 반환")
     void 토큰_조회_실패_없음() {
         // given
-        when(refreshTokenRepository.findByRefreshToken("none.jwt"))
+        when(refreshTokenRepository.findByJwtValue("none.jwt"))
                 .thenReturn(Optional.empty());
 
         // when & then

@@ -45,6 +45,7 @@ public class Member extends BaseEntity {
     @Lob private String introduction;
     @Enumerated(EnumType.STRING) private TravelType travelType;
     @Enumerated(EnumType.STRING) private Role role;
+    private Boolean additionalDataChecked = false;
 
     public enum Role {
         USER,
@@ -69,8 +70,16 @@ public class Member extends BaseEntity {
         super();
     }
 
+    private Member(String name, String email, String oauthId){
+        this.role = Role.GUEST;
+    }
+
     public static Member create(String memberName, String email, Role role) {
         return new Member(memberName, email, role);
+    }
+
+    public static Member create(String memberName, String email, String oauthId) {
+        return new Member(memberName, email, oauthId);
     }
 
     @OneToMany(mappedBy = "member")

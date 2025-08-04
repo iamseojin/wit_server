@@ -1,4 +1,4 @@
-package com.arom.with_travel.domain.member.dto;
+package com.arom.with_travel.domain.member.dto.response;
 
 import com.arom.with_travel.global.jwt.dto.response.AuthTokenResponse;
 import lombok.AllArgsConstructor;

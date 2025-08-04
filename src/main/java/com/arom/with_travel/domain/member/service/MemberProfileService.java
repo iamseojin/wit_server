@@ -5,26 +5,23 @@ import com.arom.with_travel.domain.accompanies.model.Accompany;
 import com.arom.with_travel.domain.accompanies.model.AccompanyApply;
 import com.arom.with_travel.domain.accompanies.repository.accompany.AccompanyApplyRepository;
 import com.arom.with_travel.domain.accompanies.repository.accompany.AccompanyRepository;
-import com.arom.with_travel.domain.accompanies.repository.accompany.AccompanyApplyRepository;
 import com.arom.with_travel.domain.image.Image;
 import com.arom.with_travel.domain.image.ImageType;
 import com.arom.with_travel.domain.image.repository.ImageRepository;
 import com.arom.with_travel.domain.likes.repository.LikesRepository;
 
 import com.arom.with_travel.domain.member.Member;
-import com.arom.with_travel.domain.member.dto.MemberProfileRequestDto;
-import com.arom.with_travel.domain.member.dto.MemberProfileResponseDto;
+import com.arom.with_travel.domain.member.dto.response.MemberProfileResponseDto;
 import com.arom.with_travel.domain.member.repository.MemberRepository;
 import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;
 import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
+import com.arom.with_travel.global.security.domain.AuthenticatedMember;
+import com.arom.with_travel.global.security.domain.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,8 +79,8 @@ public class MemberProfileService {
                 .collect(Collectors.toList());
     }
 
-    public void uploadMemberProfileImage(CustomOAuth2User user, String imageName, String imageUrl){
-        Member member = loadMemberOrThrow(user.getEmail());
+    public void uploadMemberProfileImage(String email, String imageName, String imageUrl){
+        Member member = loadMemberOrThrow(email);
         Image image = Image.fromMember(imageName, imageUrl, member, ImageType.MEMBER_PROFILE);
         imageRepository.save(image);
     }

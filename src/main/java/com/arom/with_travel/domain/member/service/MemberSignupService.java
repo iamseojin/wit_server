@@ -1,44 +1,45 @@
 package com.arom.with_travel.domain.member.service;
 
-import com.arom.with_travel.domain.accompanies.service.AccompanyService;
 import com.arom.with_travel.domain.member.Member;
-import com.arom.with_travel.domain.member.dto.MemberSignupRequestDto;
-import com.arom.with_travel.domain.member.dto.MemberSignupResponseDto;
+import com.arom.with_travel.domain.member.dto.request.MemberSignupRequestDto;
+import com.arom.with_travel.domain.member.dto.response.MemberSignupResponseDto;
+import com.arom.with_travel.domain.member.dto.response.SocialMemberVerificationResponse;
+import com.arom.with_travel.domain.member.dto.request.SocialMemberVerificationRequest;
 import com.arom.with_travel.domain.member.repository.MemberRepository;
 import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;
 import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
+import com.arom.with_travel.global.security.token.provider.JwtProvider;
+import com.arom.with_travel.global.security.token.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 @Transactional
 public class MemberSignupService {
 
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtProvider jwtProvider;
 
-    @Transactional(readOnly = true)
-    public boolean existsByEmail(String email) {
-        return memberRepository.existsByEmail(email);
-    }
-
-    private Member findByIdOrThrow(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> BaseException.from(ErrorCode.MEMBER_NOT_FOUND));
-    }
-
-    private Member findByEmailOrThrow(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> BaseException.from(ErrorCode.MEMBER_NOT_FOUND));
-    }
-
-    private MemberSignupResponseDto toDto(Member m) {
-        return MemberSignupResponseDto.from(m);
+    @Transactional
+    public SocialMemberVerificationResponse verifyMember(SocialMemberVerificationRequest req){
+        Member member = memberRepository.findByOauthId(req.getOauthId())
+                .orElseGet(() -> {
+                    Member newMember = Member.create(req.getName(), req.getEmail(), req.getOauthId());
+                    return memberRepository.save(newMember);
+                });
+        boolean isChecked = member.getAdditionalDataChecked();
+        String accessToken = jwtProvider.generateAccessToken(member);
+        String refreshToken = jwtProvider.generateRefreshToken(member);
+        log.info("[member id] : {}", member.getId());
+        log.info("[access token] : {}", accessToken);
+        log.info("[refresh token] : {}", refreshToken);
+        return new SocialMemberVerificationResponse(isChecked, accessToken, refreshToken);
     }
 
     // 신규 회원 등록
@@ -51,7 +52,7 @@ public class MemberSignupService {
                 });
     }
   
-private Member getUserByLoginEmailOrElseThrow(String loginEmail) {
+    private Member getUserByLoginEmailOrElseThrow(String loginEmail) {
         return memberRepository.findByEmail(loginEmail)
                 .orElseThrow(() -> BaseException.from(ErrorCode.MEMBER_NOT_FOUND));
     }
