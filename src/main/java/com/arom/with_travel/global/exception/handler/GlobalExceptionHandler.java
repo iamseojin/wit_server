@@ -25,20 +25,12 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 @RestControllerAdvice(annotations = {RestController.class})
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<String> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex,
-                                                           HttpServletRequest request) {
-        log.warn("❗ 잘못된 HTTP 메서드 요청 - [{}] {} -> {}", ex.getMethod(), request.getRequestURI(), ex.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.METHOD_NOT_ALLOWED)
-                .body("지원하지 않는 HTTP 메서드입니다: " + request.getRequestURI());
-    }
-
-
     // HTTP Method 불일치 에러
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ErrorResponse handleHttpRequestMethodNotSupportedException(
+            HttpServletRequest request,
             HttpRequestMethodNotSupportedException e) {
+        log.warn("❗ 잘못된 HTTP 메서드 요청 - [{}] {} -> {}", e.getMethod(), request.getRequestURI(), e.getMessage());
         return ErrorResponse.generateFrom(ErrorCode.METHOD_NOT_ALLOWED);
     }
 
