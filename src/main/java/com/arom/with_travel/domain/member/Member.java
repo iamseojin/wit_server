@@ -35,12 +35,17 @@ public class Member extends BaseEntity {
     private Long id;
 
     private String oauthId;
+
+    @Column(unique = true)
     private String email;
+
     private LocalDate birth;
     @Enumerated(EnumType.STRING) private Gender gender;
     private String phone;
     @Enumerated(EnumType.STRING) private LoginType loginType;
     private String name;
+
+    @Column(unique = true)
     private String nickname;
     @Lob private String introduction;
     @Enumerated(EnumType.STRING) private TravelType travelType;
