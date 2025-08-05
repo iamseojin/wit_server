@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -49,24 +50,25 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/signup/**").permitAll()
-                        .requestMatchers("/", "/index/**", "/index.js", "/favicon.ico", "/.well-known/**",
+                        .requestMatchers("/", "/index/**", "/index.js", "/favicon.ico",
                                 "/templates", "/error", "/v3/api-docs/**", "/swagger-ui/**", "/api/v1/login",
-                                "/api/v1/signup",  "/api/v1/check-email","/actuator/**").permitAll()
+                                "/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling((exceptionHandling) -> exceptionHandling
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
-                .cors(cors -> {
-                    CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.addAllowedOrigin("http://localhost:8080");
-                    configuration.addAllowedOrigin("http://localhost:8081");
-                    configuration.addAllowedMethod("*");
-                    configuration.addAllowedHeader("*");
-                    configuration.setAllowCredentials(true);
-                    configuration.addAllowedOriginPattern("*");
-                    cors.configurationSource(request -> configuration);
-                })
+//                .cors(cors -> {
+//                    CorsConfiguration configuration = new CorsConfiguration();
+//                    configuration.addAllowedOrigin("http://localhost:8080");
+//                    configuration.addAllowedOrigin("http://localhost:8081");
+//                    configuration.addAllowedMethod("*");
+//                    configuration.addAllowedHeader("*");
+//                    configuration.setAllowCredentials(true);
+//                    configuration.addAllowedOriginPattern("*");
+//                    cors.configurationSource(request -> configuration);
+//                })
+                .cors(Customizer.withDefaults())
                 .securityContext(securityContext -> {
                     securityContext
                             .requireExplicitSave(true);
