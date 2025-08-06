@@ -1,9 +1,12 @@
 package com.arom.with_travel.domain.member.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SocialMemberVerificationRequest {
     @NotBlank private String oauthId;
     @NotBlank private String email;

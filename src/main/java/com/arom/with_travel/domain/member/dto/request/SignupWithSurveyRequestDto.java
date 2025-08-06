@@ -1,0 +1,22 @@
+package com.arom.with_travel.domain.member.dto.request;
+
+
+import com.arom.with_travel.domain.survey.dto.request.SurveyRequestDto;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class SignupWithSurveyRequestDto {
+
+    @Valid @NotNull
+    private MemberSignupRequestDto extraInfo;   // 닉네임·성별·생년월일
+
+    @Valid @NotEmpty
+    private List<SurveyRequestDto> surveys;
+}

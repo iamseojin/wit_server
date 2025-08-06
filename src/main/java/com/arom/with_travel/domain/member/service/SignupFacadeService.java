@@ -1,0 +1,28 @@
+package com.arom.with_travel.domain.member.service;
+
+import com.arom.with_travel.domain.member.dto.request.SignupWithSurveyRequestDto;
+import com.arom.with_travel.domain.member.dto.response.MemberSignupResponseDto;
+import com.arom.with_travel.domain.survey.service.SurveyService;
+import com.arom.with_travel.global.security.token.service.TokenService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class SignupFacadeService {
+
+    private final MemberSignupService memberSignupService;
+    private final SurveyService surveyService;
+    private final TokenService tokenService;
+
+    @Transactional
+    public MemberSignupResponseDto fillExtraInfo(String email,
+                                                      SignupWithSurveyRequestDto req) {
+        MemberSignupResponseDto memberDto =
+                memberSignupService.fillExtraInfo(email, req.getExtraInfo());
+        req.getSurveys().forEach(dto -> surveyService.createSurvey(email, dto));
+
+        return memberDto;
+    }
+}
