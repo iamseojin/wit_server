@@ -76,6 +76,9 @@ public class Member extends BaseEntity {
     }
 
     private Member(String name, String email, String oauthId){
+        this.name    = name;
+        this.email   = email;
+        this.oauthId = oauthId;
         this.role = Role.GUEST;
     }
 
