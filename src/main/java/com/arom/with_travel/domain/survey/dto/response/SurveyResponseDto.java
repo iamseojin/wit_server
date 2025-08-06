@@ -20,7 +20,6 @@ public class SurveyResponseDto {
     public static SurveyResponseDto from(Survey survey) {
         return SurveyResponseDto.builder()
                 .surveyId(survey.getId())
-                .question(survey.getQuestion())
                 .answers(survey.getAnswers())
                 .build();
     }

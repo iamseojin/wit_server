@@ -28,7 +28,7 @@ public class SurveyService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> BaseException.from(ErrorCode.MEMBER_NOT_FOUND));
 
-        Survey survey = Survey.create(member, dto.getQuestion(), dto.getAnswers());
+        Survey survey = Survey.create(member, dto.getAnswers());
         surveyRepository.save(survey);
     }
 

@@ -26,9 +26,6 @@ public class Survey extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull @Lob
-    private String question;
-
     // Survey 엔티티가 answers 문자열 리스트를 갖고 있고, 이 값들을 별도의 테이블에 저장하도록 리팩토링
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "survey_answers",
@@ -40,21 +37,13 @@ public class Survey extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static Survey create(Member member, String question, List<String> answers) {
-        validateQuestion(question);
+    public static Survey create(Member member,List<String> answers) {
         validateAnswers(answers);
 
         Survey survey = new Survey();
         survey.member = member;
-        survey.question = question;
         survey.answers = answers;
         return survey;
-    }
-
-    private static void validateQuestion(String question) {
-        if (question == null || question.isBlank()) {
-            throw BaseException.from(ErrorCode.INVALID_SURVEY_QUESTION);
-        }
     }
 
     private static void validateAnswers(List<String> answers){
