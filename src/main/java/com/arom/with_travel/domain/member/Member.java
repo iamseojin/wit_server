@@ -166,8 +166,8 @@ public class Member extends BaseEntity {
         this.gender   = gender;
     }
 
-    public boolean needExtraInfo() {
-        return nickname == null || birth == null || gender == null;
+    public void markAdditionalDataChecked() {
+        this.additionalDataChecked = true;
     }
 
     public void uploadImage(Image image){
