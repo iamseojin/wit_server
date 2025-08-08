@@ -76,6 +76,9 @@ public class Member extends BaseEntity {
     }
 
     private Member(String name, String email, String oauthId){
+        this.name    = name;
+        this.email   = email;
+        this.oauthId = oauthId;
         this.role = Role.GUEST;
     }
 
@@ -163,8 +166,8 @@ public class Member extends BaseEntity {
         this.gender   = gender;
     }
 
-    public boolean needExtraInfo() {
-        return nickname == null || birth == null || gender == null;
+    public void markAdditionalDataChecked() {
+        this.additionalDataChecked = true;
     }
 
     public void uploadImage(Image image){

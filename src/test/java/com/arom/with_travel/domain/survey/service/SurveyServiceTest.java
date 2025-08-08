@@ -39,7 +39,6 @@ class SurveyServiceTest {
         // 테스트용 더미 데이터
         member = Member.create("user1", "user1@email.com", Member.Role.USER);
         dto = SurveyRequestDto.builder()
-                .question("Q?")
                 .answers(List.of("A1","A2"))
                 .build();
     }

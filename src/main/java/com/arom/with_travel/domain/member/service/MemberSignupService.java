@@ -2,10 +2,13 @@ package com.arom.with_travel.domain.member.service;
 
 import com.arom.with_travel.domain.member.Member;
 import com.arom.with_travel.domain.member.dto.request.MemberSignupRequestDto;
+import com.arom.with_travel.domain.member.dto.request.SignupWithSurveyRequestDto;
 import com.arom.with_travel.domain.member.dto.response.MemberSignupResponseDto;
 import com.arom.with_travel.domain.member.dto.response.SocialMemberVerificationResponse;
 import com.arom.with_travel.domain.member.dto.request.SocialMemberVerificationRequest;
 import com.arom.with_travel.domain.member.repository.MemberRepository;
+import com.arom.with_travel.domain.survey.Survey;
+import com.arom.with_travel.domain.survey.repository.SurveyRepository;
 import com.arom.with_travel.global.exception.BaseException;
 import com.arom.with_travel.global.exception.error.ErrorCode;
 import com.arom.with_travel.global.oauth2.dto.CustomOAuth2User;
@@ -23,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberSignupService {
 
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final SurveyRepository surveyRepository;
     private final JwtProvider jwtProvider;
 
     @Transactional
@@ -40,6 +43,24 @@ public class MemberSignupService {
         log.info("[access token] : {}", accessToken);
         log.info("[refresh token] : {}", refreshToken);
         return new SocialMemberVerificationResponse(isChecked, accessToken, refreshToken);
+    }
+
+    // 신규 회원 추가 정보 + 설문 통합 등록
+    public MemberSignupResponseDto registerWithSurvey(String email,
+                                                      SignupWithSurveyRequestDto req) {
+        Member member = getUserByLoginEmailOrElseThrow(email);
+
+        MemberSignupRequestDto extra = req.getExtraInfo();
+        member.updateExtraInfo(extra.getNickname(), extra.getBirthdate(), extra.getGender());
+
+        req.getSurveys().forEach(sdto -> {
+            Survey survey = Survey.create(member, sdto.getAnswers());
+            surveyRepository.save(survey);
+        });
+
+        member.markAdditionalDataChecked();
+
+        return MemberSignupResponseDto.from(member);
     }
 
     // 신규 회원 등록
