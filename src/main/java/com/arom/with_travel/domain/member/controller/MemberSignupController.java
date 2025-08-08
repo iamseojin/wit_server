@@ -6,7 +6,6 @@ import com.arom.with_travel.domain.member.dto.response.MemberSignupResponseDto;
 import com.arom.with_travel.domain.member.dto.response.MemberSignupTokenResponse;
 import com.arom.with_travel.domain.member.dto.response.SocialMemberVerificationResponse;
 import com.arom.with_travel.domain.member.service.MemberSignupService;
-import com.arom.with_travel.domain.member.service.SignupFacadeService;
 import com.arom.with_travel.global.jwt.dto.response.AuthTokenResponse;
 import com.arom.with_travel.global.security.domain.AuthenticatedMember;
 import com.arom.with_travel.global.security.domain.PrincipalDetails;
@@ -28,7 +27,6 @@ public class MemberSignupController {
 
     private final MemberSignupService memberSignupService;
     private final TokenService tokenService;
-    private final SignupFacadeService signupFacadeService;
 
     // 추가 정보 및 설문 조사 등록
     @PostMapping("/register")
@@ -39,7 +37,7 @@ public class MemberSignupController {
         AuthenticatedMember member = principal.getAuthenticatedMember();
 
         MemberSignupResponseDto dto =
-                signupFacadeService.fillExtraInfo(member.getEmail(), req);
+                memberSignupService.registerWithSurvey(member.getEmail(), req);
 
         return ResponseEntity.ok(dto);
     }
