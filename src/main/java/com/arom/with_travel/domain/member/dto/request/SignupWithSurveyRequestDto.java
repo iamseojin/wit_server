@@ -13,9 +13,9 @@ import java.util.List;
 @Getter
 public class SignupWithSurveyRequestDto {
 
-    @Valid @NotNull
+    @NotNull
     private MemberSignupRequestDto extraInfo;   // 닉네임·성별·생년월일
 
-    @Valid @NotEmpty
+    @NotEmpty
     private List<SurveyRequestDto> surveys;
 }
