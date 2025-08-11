@@ -52,7 +52,7 @@ public class MemberSignupService {
         Member member = getUserByLoginEmailOrElseThrow(email);
 
         MemberSignupRequestDto extra = req.getExtraInfo();
-        member.updateExtraInfo(extra.getNickname(), extra.getBirthdate(), extra.getGender());
+        member.updateExtraInfo(extra.getNickname(), extra.getBirthdate(), extra.getGender(), extra.getIntroduction());
 
         req.getSurveys().forEach(sdto -> {
             Survey survey = Survey.create(member, sdto.getAnswers());
