@@ -47,7 +47,7 @@ public class Member extends BaseEntity {
 
     @Column(unique = true)
     private String nickname;
-    @Lob private String introduction;
+    private String introduction;
     @Enumerated(EnumType.STRING) private TravelType travelType;
     @Enumerated(EnumType.STRING) private Role role;
     private Boolean additionalDataChecked = false;
@@ -160,10 +160,11 @@ public class Member extends BaseEntity {
     }
 
     // 신규 회원 추가 정보 등록; 닉네임/생년월일/성별
-    public void updateExtraInfo(String nickname, LocalDate birth, Gender gender) {
+    public void updateExtraInfo(String nickname, LocalDate birth, Gender gender, String introduction) {
         this.nickname = nickname;
         this.birth    = birth;
         this.gender   = gender;
+        this.introduction = introduction;
     }
 
     public void markAdditionalDataChecked() {
