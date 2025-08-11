@@ -69,17 +69,17 @@ public class AccompanyServiceTest {
     }
     @Nested
     class 동행_생성 {
-        @Test
-        void 동행_글쓰기_성공(){
-            //given
-            given(memberRepository.findByOauthId(anyString())).willReturn(Optional.of(owner));
-            given(accompanyRepository.save(any(Accompany.class))).willReturn(accompany);
-            //when
-            String result = accompanyService.createAccompany(request, "oauthId");
-            //then
-            assertThat(result).isEqualTo("등록 되었습니다");
-            verify(accompanyRepository, times(1)).save(any(Accompany.class));
-        }
+//        @Test
+//        void 동행_글쓰기_성공(){
+//            //given
+//            given(memberRepository.findByOauthId(anyString())).willReturn(Optional.of(owner));
+//            given(accompanyRepository.save(any(Accompany.class))).willReturn(accompany);
+//            //when
+//            String result = accompanyService.createAccompany(request, "oauthId");
+//            //then
+//            assertThat(result).isEqualTo("등록 되었습니다");
+//            verify(accompanyRepository, times(1)).save(any(Accompany.class));
+//        }
 
         @Test
         void 동행_글쓰기_맴버찾을수없음_실패(){

@@ -46,9 +46,7 @@ public class MemberSignupController {
     @GetMapping(value = "/register")
     public ResponseEntity<MemberSignupTokenResponse> getMyInfo(@AuthenticationPrincipal PrincipalDetails principal) {
         AuthenticatedMember member = principal.getAuthenticatedMember();
-        MemberSignupResponseDto dto = memberSignupService.getSignupInfo(member.getEmail());
-        AuthTokenResponse tokenDto = tokenService.issueTokenPair(member.getEmail());
-        MemberSignupTokenResponse signupDto = new MemberSignupTokenResponse(dto, tokenDto);
+        MemberSignupTokenResponse signupDto = memberSignupService.getSignupInfo(member.getEmail());
         return ResponseEntity.ok(signupDto);
     }
 

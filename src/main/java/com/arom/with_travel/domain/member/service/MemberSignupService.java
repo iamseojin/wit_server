@@ -4,6 +4,7 @@ import com.arom.with_travel.domain.member.Member;
 import com.arom.with_travel.domain.member.dto.request.MemberSignupRequestDto;
 import com.arom.with_travel.domain.member.dto.request.SignupWithSurveyRequestDto;
 import com.arom.with_travel.domain.member.dto.response.MemberSignupResponseDto;
+import com.arom.with_travel.domain.member.dto.response.MemberSignupTokenResponse;
 import com.arom.with_travel.domain.member.dto.response.SocialMemberVerificationResponse;
 import com.arom.with_travel.domain.member.dto.request.SocialMemberVerificationRequest;
 import com.arom.with_travel.domain.member.repository.MemberRepository;
@@ -90,8 +91,8 @@ public class MemberSignupService {
     }
 
     @Transactional(readOnly = true)
-    public MemberSignupResponseDto getSignupInfo(String email) {
+    public MemberSignupTokenResponse getSignupInfo(String email) {
         Member member = getUserByLoginEmailOrElseThrow(email);
-        return MemberSignupResponseDto.from(member);
+        return MemberSignupTokenResponse.from(member);
     }
 }
