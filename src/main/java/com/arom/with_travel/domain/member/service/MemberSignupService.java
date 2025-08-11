@@ -85,7 +85,8 @@ public class MemberSignupService {
         Member member = getUserByLoginEmailOrElseThrow(email);
         member.updateExtraInfo(dto.getNickname(),
                 dto.getBirthdate(),
-                dto.getGender());
+                dto.getGender(),
+                dto.getIntroduction());
 
         return MemberSignupResponseDto.from(member);
     }
