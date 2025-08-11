@@ -54,4 +54,9 @@ public class MemberSignupController {
     public SocialMemberVerificationResponse checkMember(@RequestBody @Valid SocialMemberVerificationRequest req){
         return memberSignupService.verifyMember(req);
     }
+
+    @GetMapping("/member/nickname/duplicate")
+    public boolean checkNicknameDuplicate(@RequestParam String nickname) {
+        return memberSignupService.isNicknameDuplicated(nickname);
+    }
 }

@@ -96,4 +96,9 @@ public class MemberSignupService {
         Member member = getUserByLoginEmailOrElseThrow(email);
         return MemberSignupTokenResponse.from(member);
     }
+
+    @Transactional(readOnly = true)
+    public boolean isNicknameDuplicated(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
 }
