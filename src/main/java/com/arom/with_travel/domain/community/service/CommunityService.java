@@ -114,6 +114,28 @@ public class CommunityService {
         communityRepository.delete(c);
     }
 
+    @Transactional
+    public Page<CommunityListItemResponse> search(String continent, String country, String city, String q,
+                                                  Pageable pageable) {
+        Specification<Community> spec = Specification
+                .where(continentEq(continent))
+                .and(countryEq(country))
+                .and(cityEq(city))
+                .and(keywordLike(q));
+
+        return communityRepository.search(spec, pageable)
+                .map(c -> new CommunityListItemResponse(
+                        c.getId(),
+                        c.getTitle(),
+                        c.getContent().length() > 30 ? c.getContent().substring(0, 30) + "..." : c.getContent(),
+                        c.getContinent(), c.getCountry(), c.getCity(),
+                        c.getMember().getId(),
+                        c.getMember().getNickname(),
+                        c.getViewCount(),
+                        c.getCreatedAt().toString()
+                ));
+    }
+
     private void validateOwnership(Long currentMemberId, Long ownerId) {
         if (!ownerId.equals(currentMemberId)) {
             throw BaseException.from(ErrorCode.COMMUNITY_FORBIDDEN);
