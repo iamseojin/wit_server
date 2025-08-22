@@ -109,7 +109,7 @@ public class CommunityService {
     @Transactional
     public void delete(Long currentMemberId, Long communityId) {
         Community c = communityRepository.findById(communityId)
-                .orElseThrow(() -> BaseException.from(ErrorCode.CONTINENT_NOT_FOUND));
+                .orElseThrow(() -> BaseException.from(ErrorCode.COMMUNITY_NOT_FOUND));
         validateOwnership(currentMemberId, c.getMember().getId());
         communityRepository.delete(c);
     }
