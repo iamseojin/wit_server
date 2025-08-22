@@ -21,5 +21,5 @@ public class CommunityDetailResponse {
     long viewCount;
     List<String> imageUrls;
     String createdAt;
-    String updatedA;
+    String updatedAt;
 }
